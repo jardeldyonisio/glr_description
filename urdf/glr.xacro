@@ -160,7 +160,24 @@
   <!-- CASTER WHEELS (Front - 2 wheels) -->
   <!-- ============================================ -->
   
-  <!-- Front Left Caster -->
+  <!-- Front Left Caster Mount -->
+  <link name="front_left_caster_mount">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="front_left_caster_steering_joint" type="continuous">
+    <origin xyz="0.3 -0.7 -0.0926" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="front_left_caster_mount"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- Front Left Caster Wheel -->
   <link name="front_left_caster">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -190,13 +207,32 @@
     <mu2>0.0</mu2>
   </gazebo>
 
-  <joint name="front_left_caster_joint" type="fixed">
-    <origin xyz="0.3 -0.7 -0.0926" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+  <joint name="front_left_caster_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="front_left_caster_mount"/>
     <child link="front_left_caster"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
-  <!-- Front Right Caster -->
+  <!-- Front Right Caster Mount -->
+  <link name="front_right_caster_mount">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="front_right_caster_steering_joint" type="continuous">
+    <origin xyz="-0.3 -0.7 -0.0926" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="front_right_caster_mount"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- Front Right Caster Wheel -->
   <link name="front_right_caster">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -226,17 +262,36 @@
     <mu2>0.0</mu2>
   </gazebo>
 
-  <joint name="front_right_caster_joint" type="fixed">
-    <origin xyz="-0.3 -0.7 -0.0926" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+  <joint name="front_right_caster_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="front_right_caster_mount"/>
     <child link="front_right_caster"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
   <!-- ============================================ -->
   <!-- CASTER WHEELS (Back - 2 wheels) -->
   <!-- ============================================ -->
   
-  <!-- Back Left Caster -->
+  <!-- Back Left Caster Mount -->
+  <link name="back_left_caster_mount">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="back_left_caster_steering_joint" type="continuous">
+    <origin xyz="0.3 0.7 -0.0926" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="back_left_caster_mount"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- Back Left Caster Wheel -->
   <link name="back_left_caster">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -266,13 +321,32 @@
     <mu2>0.0</mu2>
   </gazebo>
 
-  <joint name="back_left_caster_joint" type="fixed">
-    <origin xyz="0.3 0.7 -0.0926" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+  <joint name="back_left_caster_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="back_left_caster_mount"/>
     <child link="back_left_caster"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
-  <!-- Back Right Caster -->
+  <!-- Back Right Caster Mount -->
+  <link name="back_right_caster_mount">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="back_right_caster_steering_joint" type="continuous">
+    <origin xyz="-0.3 0.7 -0.0926" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="back_right_caster_mount"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- Back Right Caster Wheel -->
   <link name="back_right_caster">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -302,10 +376,12 @@
     <mu2>0.0</mu2>
   </gazebo>
 
-  <joint name="back_right_caster_joint" type="fixed">
-    <origin xyz="-0.3 0.7 -0.0926" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+  <joint name="back_right_caster_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="back_right_caster_mount"/>
     <child link="back_right_caster"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
   <!-- ============================================ -->
@@ -588,7 +664,7 @@
   <link name="rodadiant1">
     <inertial>
       <origin
-        xyz="-0.08 0 0"
+        xyz="0 0 0"
         rpy="0 0 0" />
       <mass
         value="2" />
@@ -596,10 +672,10 @@
     </inertial>
     <visual>
       <origin
-        xyz="-0.08 0 0"
+        xyz="0 0 0"
         rpy="0 1.5708 0" />
       <geometry>
-        <cylinder radius="0.14260" length="0.16"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
       <material
         name="">
@@ -609,10 +685,10 @@
     </visual>
     <collision>
       <origin
-        xyz="-0.08 0 0"
-        rpy="0 1.57 0" />
+        xyz="0 0 0"
+        rpy="0 1.5708 0" />
       <geometry>
-        <sphere radius="0.14260"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
     </collision>
   </link>
@@ -866,7 +942,7 @@
   <link name="rodadiant2">
     <inertial>
       <origin
-        xyz="0.08 0 0"
+        xyz="0 0 0"
         rpy="0 0 0" />
       <mass
         value="2" />
@@ -874,10 +950,10 @@
     </inertial>
     <visual>
       <origin
-        xyz="0.08 0 0"
+        xyz="0 0 0"
         rpy="0 1.5708 0" />
       <geometry>
-        <cylinder radius="0.14260" length="0.16"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
       <material
         name="">
@@ -887,10 +963,10 @@
     </visual>
     <collision>
       <origin
-        xyz="0.08 0 0"
+        xyz="0 0 0"
         rpy="0 1.5708 0" />
       <geometry>
-        <sphere radius="0.14260"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
     </collision>
   </link>
@@ -995,7 +1071,7 @@
   <link name="rodatras1">
     <inertial>
       <origin
-        xyz="-0.089466 6.8295E-06 -8.8605E-05"
+        xyz="0 0 0"
         rpy="0 0 0" />
       <mass
         value="2" />
@@ -1003,10 +1079,10 @@
     </inertial>
     <visual>
       <origin
-        xyz="-0.08 0 0"
+        xyz="0 0 0"
         rpy="0 1.5708 0" />
       <geometry>
-        <cylinder radius="0.14260" length="0.16"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
       <material
         name="">
@@ -1016,10 +1092,10 @@
     </visual>
     <collision>
       <origin
-        xyz="-0.08 0 0"
-        rpy="0 1.57 0" />
+        xyz="0 0 0"
+        rpy="0 1.5708 0" />
       <geometry>
-        <sphere radius="0.14260"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
     </collision>
   </link>
@@ -1122,7 +1198,7 @@
   <link name="rodatras2">
     <inertial>
       <origin
-        xyz="0.08 0 0"
+        xyz="0 0 0"
         rpy="0 0 0" />
       <mass
         value="2" />
@@ -1130,10 +1206,10 @@
     </inertial>
     <visual>
       <origin
-        xyz="0.08 0 0"
+        xyz="0 0 0"
         rpy="0 1.5708 0" />
       <geometry>
-        <cylinder radius="0.14260" length="0.16"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
       <material
         name="">
@@ -1143,10 +1219,10 @@
     </visual>
     <collision>
       <origin
-        xyz="0.08 0 0"
-        rpy="0 1.57 0" />
+        xyz="0 0 0"
+        rpy="0 1.5708 0" />
       <geometry>
-        <sphere radius="0.14260"/>
+        <cylinder radius="0.14260" length="0.08"/>
       </geometry>
     </collision>
   </link>
