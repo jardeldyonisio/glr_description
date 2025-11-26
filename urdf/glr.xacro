@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="glr_description" xmlns:xacro="http://ros.org/wiki/xacro">
   
+  <!-- Wheel properties -->
+  <xacro:property name="wheel_radius" value="0.1" />
+  <xacro:property name="wheel_width" value="0.08" />
+  <xacro:property name="caster_radius" value="0.05" />
+  
   <!-- Define intertial property macros  -->
   <xacro:macro name="box_inertia" params="m w d h">
     <inertia ixx="${1*(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${1*(m/12) * (w*w + d*d)}" iyz="0.0" izz="${1*(m/12) * (w*w + h*h)}"/>
@@ -74,6 +79,7 @@
   <joint name="base_chassi_joint" type="fixed">
     <parent link="base_link"/>
     <child link="chassibigga"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
   </joint>
   
   <!-- Left Traction Wheel -->
@@ -81,12 +87,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="12"/>
-      <xacro:sphere_inertia m="12" r="0.1"/>
+      <xacro:sphere_inertia m="12" r="${wheel_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 1.5708 0"/>
       <geometry>
-        <cylinder radius="0.1" length="0.08"/>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
       </geometry>
       <material name="wheel_material">
         <color rgba="0.29804 0.29804 0.29804 1"/>
@@ -95,7 +101,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0"/>
       <geometry>
-        <cylinder radius="0.1" length="0.08"/>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
       </geometry>
     </collision>
   </link>
@@ -119,12 +125,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="12"/>
-      <xacro:sphere_inertia m="12" r="0.1"/>
+      <xacro:sphere_inertia m="12" r="${wheel_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 1.5708 0"/>
       <geometry>
-        <cylinder radius="0.1" length="0.08"/>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
       </geometry>
       <material name="wheel_material">
         <color rgba="0.29804 0.29804 0.29804 1"/>
@@ -133,7 +139,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0"/>
       <geometry>
-        <cylinder radius="0.1" length="0.08"/>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
       </geometry>
     </collision>
   </link>
@@ -162,7 +168,7 @@
   </link>
 
   <joint name="front_left_caster_steering_joint" type="continuous">
-    <origin xyz="0.2 -0.3 -0.0926" rpy="0 0 0"/>
+    <origin xyz="0.2 -0.3 ${-wheel_radius + caster_radius}" rpy="0 0 0"/>
     <parent link="chassibigga"/>
     <child link="front_left_caster_mount"/>
     <axis xyz="0 0 1"/>
@@ -174,12 +180,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.5"/>
-      <xacro:sphere_inertia m="0.5" r="0.05"/>
+      <xacro:sphere_inertia m="0.5" r="${caster_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
       <material name="caster_material">
         <color rgba="0.5 0.5 0.5 1"/>
@@ -188,7 +194,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
     </collision>
   </link>
@@ -217,7 +223,7 @@
   </link>
 
   <joint name="front_right_caster_steering_joint" type="continuous">
-    <origin xyz="-0.2 -0.3 -0.0926" rpy="0 0 0"/>
+    <origin xyz="-0.2 -0.3 ${-wheel_radius + caster_radius}" rpy="0 0 0"/>
     <parent link="chassibigga"/>
     <child link="front_right_caster_mount"/>
     <axis xyz="0 0 1"/>
@@ -229,12 +235,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.5"/>
-      <xacro:sphere_inertia m="0.5" r="0.05"/>
+      <xacro:sphere_inertia m="0.5" r="${caster_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
       <material name="caster_material">
         <color rgba="0.5 0.5 0.5 1"/>
@@ -243,7 +249,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
     </collision>
   </link>
@@ -276,7 +282,7 @@
   </link>
 
   <joint name="back_left_caster_steering_joint" type="continuous">
-    <origin xyz="0.2 0.3 -0.0926" rpy="0 0 0"/>
+    <origin xyz="0.2 0.3 ${-wheel_radius + caster_radius}" rpy="0 0 0"/>
     <parent link="chassibigga"/>
     <child link="back_left_caster_mount"/>
     <axis xyz="0 0 1"/>
@@ -288,12 +294,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.5"/>
-      <xacro:sphere_inertia m="0.5" r="0.05"/>
+      <xacro:sphere_inertia m="0.5" r="${caster_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
       <material name="caster_material">
         <color rgba="0.5 0.5 0.5 1"/>
@@ -302,7 +308,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
     </collision>
   </link>
@@ -331,7 +337,7 @@
   </link>
 
   <joint name="back_right_caster_steering_joint" type="continuous">
-    <origin xyz="-0.2 0.3 -0.0926" rpy="0 0 0"/>
+    <origin xyz="-0.2 0.3 ${-wheel_radius + caster_radius}" rpy="0 0 0"/>
     <parent link="chassibigga"/>
     <child link="back_right_caster_mount"/>
     <axis xyz="0 0 1"/>
@@ -343,12 +349,12 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.5"/>
-      <xacro:sphere_inertia m="0.5" r="0.05"/>
+      <xacro:sphere_inertia m="0.5" r="${caster_radius}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
       <material name="caster_material">
         <color rgba="0.5 0.5 0.5 1"/>
@@ -357,7 +363,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="${caster_radius}"/>
       </geometry>
     </collision>
   </link>
@@ -392,7 +398,7 @@
       <right_joint>right_wheel_joint</right_joint>
 
       <wheel_separation>0.5</wheel_separation>
-      <wheel_diameter>0.2852</wheel_diameter>
+      <wheel_diameter>${2 * wheel_radius}</wheel_diameter>
 
       <max_wheel_torque>200</max_wheel_torque>
       <max_wheel_acceleration>10.0</max_wheel_acceleration>
@@ -1264,7 +1270,7 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="chassibigga"/>
     <child link="lidar_link"/>
-    <origin xyz="0 -0.25 0.37" rpy="0 0 0"/>
+    <origin xyz="0 -0.25 0.155" rpy="0 0 0"/>
   </joint>
 
   <gazebo reference="lidar_link">
