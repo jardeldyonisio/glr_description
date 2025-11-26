@@ -1,0 +1,1825 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="glr_description" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Define intertial property macros  -->
+  <xacro:macro name="box_inertia" params="m w d h">
+    <inertia ixx="${1*(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${1*(m/12) * (w*w + d*d)}" iyz="0.0" izz="${1*(m/12) * (w*w + h*h)}"/>
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertia ixx="${1*(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${1*(2/5) * m * (r*r)}" iyz="0.0" izz="${1*(2/5) * m * (r*r)}"/>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <!-- <origin xyz="0 0 0" rpy="${pi/2} 0 0" /> -->
+      <mass value="${m}"/>
+      <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0" iyy="${m*(3*r*r+h*h)/12}" iyz = "0" izz="${m*r*r/2}" /> 
+      <!-- <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy = "0" ixz = "0" iyy="${(m/12) * (3*r*r + h*h)}" iyz = "0" izz="${(m/2) * (r*r)}"/> -->
+    </inertial>
+  </xacro:macro>
+
+  <!--Robot description  -->
+  <link name="base_link"/>
+
+  <!-- Robot Footprint -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 0" rpy="0 0 -1.5708"/> <!-- Adjusted orientation by 90 degrees (1.5708 radians) -->
+  </joint>
+
+  <!-- Tugger -->
+  <link name="chassibigga">
+    <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+    <inertial>
+      <origin
+        xyz="0. -0.81 0."
+        rpy="0 0 0" />
+      <mass
+        value="555.02" />
+      <xacro:box_inertia m="555.02" w="0.9" d="1.6" h="1.1"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.8 0.38"
+        rpy="0 0 0" />
+      <geometry>
+          <box size="0.90 1.6 0.80"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.8 0.38"
+        rpy="0 0 0" />
+      <geometry>
+          <box size="0.90 1.6 0.80"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="chassibigga">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <joint name="base_chassi_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassibigga"/>
+  </joint>
+
+  <link name="volantebigga">
+    <inertial>
+      <origin
+        xyz="0.0017469 -0.08522 0.13505"
+        rpy="0 0 0" />
+      <mass
+        value="2.496" />
+      <inertia
+        ixx="5.5"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="5.5"
+        iyz="0.0"
+        izz="5.5" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/volantebigga.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <gazebo reference="volantebigga">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+
+  <joint name="eixovolantebigga"
+    type="fixed">
+    <origin
+      xyz="0 -1.3437 0.19438"
+      rpy="-0.13255 0 0" />
+    <parent link="chassibigga" />
+    <child link="volantebigga" />
+  </joint>
+
+  <link name="rodavolantebigga">
+    <inertial>
+      <origin
+        xyz="-0.00 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="12" />
+      <xacro:sphere_inertia m="12" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.0 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.0 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="rodavolantebigga">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+
+  <link name="rodavolantebigga_uni">
+    <inertial>
+      <origin
+        xyz="-0. 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="12" />
+      <xacro:sphere_inertia m="12" r="0.14260"/>
+    </inertial>
+  </link>
+
+  <joint name="eixorodavolantebigga_steer"
+    type="revolute">
+    <origin
+      xyz="0.00 -0.024481 -0.38947"
+      rpy="0 0 0" />
+    <parent link="volantebigga" />
+    <child link="rodavolantebigga_uni" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.7"
+      upper="0.7"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="1.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <joint name="eixorodavolantebigga"
+    type="continuous">
+    <origin
+      xyz="0. -0. -0."
+      rpy="0 0 0" />
+    <parent link="rodavolantebigga_uni" />
+    <child link="rodavolantebigga" />
+    <axis
+      xyz="1 0 0" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <joint name="eixochassibigga"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent link="chassibigga" />
+    <child link="chassibigga_uni" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.6"
+      upper="0.6"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="chassibigga_uni">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <mass value="0.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+
+  <joint name="eixochassibigga_extra_roll"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent link="chassibigga_uni" />
+    <child link="chassibigga_uni_roll" />
+    <axis xyz="0 1 0" />
+    <limit
+      lower="-0.6"
+      upper="0.6"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="chassibigga_uni_roll">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <mass value="0.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="eixochassibigga_extra"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent link="chassibigga_uni_roll" />
+    <child link="chassibigga_uni_extra" />
+    <axis xyz="1 0 0" />
+    <limit
+      lower="-0.6"
+      upper="0.6"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="chassibigga_uni_extra">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <mass value="0.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="eixochassibigga_uni"
+    type="revolute">
+    <origin
+      xyz="0 1.1578 0.0112477"
+      rpy="0 0 0" />
+    <parent link="chassibigga_uni_extra" />
+    <child link="cambao" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodatras1bigga">
+    <inertial>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="12" />
+      <xacro:sphere_inertia m="12" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="3.14159 1.57079 3.14159" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="rodatras1bigga">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="rodatras2bigga">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <joint name="eixorodatras1bigga"
+    type="continuous">
+    <origin
+      xyz="0.4533 -0.37445 -0.16662"
+      rpy="0 0 0" />
+    <parent link="chassibigga" />
+    <child link="rodatras1bigga" />
+    <axis
+      xyz="1 0 0" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodatras2bigga">
+    <inertial>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="12" />
+      <xacro:sphere_inertia m="12" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.08 0 0"
+        rpy="3.14159 1.57079 3.14159" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="eixorodatras2bigga"
+    type="continuous">
+    <origin
+      xyz="-0.4533 -0.37445 -0.16662"
+      rpy="0 0 0" />
+    <parent link="chassibigga" />
+    <child link="rodatras2bigga" />
+    <axis
+      xyz="1 0 0" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_ackermann_drive" filename="libgazebo_ros_ackermann_drive.so">
+      <ros>
+        <remapping>cmd_vel:=cmd_vel</remapping>
+        <remapping>odom:=odom</remapping>
+        <remapping>distance:=distance_demo</remapping>
+      </ros>
+
+      <update_rate>100.0</update_rate>
+
+      <front_left_joint>eixorodavolantebigga</front_left_joint>
+      <front_right_joint>eixorodavolantebigga</front_right_joint>
+      <rear_left_joint>eixorodatras1bigga</rear_left_joint>
+      <rear_right_joint>eixorodatras2bigga</rear_right_joint>
+      <left_steering_joint>eixorodavolantebigga_steer</left_steering_joint>
+      <right_steering_joint>eixorodavolantebigga_steer</right_steering_joint>
+      <steering_wheel_joint>steering_joint</steering_wheel_joint>
+
+      <max_steer>0.6458</max_steer>
+
+      <max_steering_angle>7.85</max_steering_angle>
+
+      <max_speed>20</max_speed>
+
+      <left_steering_pid_gain>1500 0 1</left_steering_pid_gain>
+      <left_steering_i_range>0 0</left_steering_i_range>
+      <right_steering_pid_gain>1500 0 1</right_steering_pid_gain>
+      <right_steering_i_range>0 0</right_steering_i_range>
+      <linear_velocity_pid_gain>1000 0 1</linear_velocity_pid_gain>
+      <linear_velocity_i_range>0 0</linear_velocity_i_range>
+
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+      <publish_distance>true</publish_distance>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+    </plugin>
+  </gazebo>
+
+  <!-- Connector -->
+  <link name="cambao">
+    <inertial>
+      <origin
+        xyz="-0.0010213 -0.38489 0.0092469"
+        rpy="0 0 0" />
+      <mass
+        value="1." />
+      <inertia
+        ixx="0.12"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.12"
+        iyz="0.0"
+        izz="0.12" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.7 0"
+        rpy="0 0 0" />
+     <geometry>
+        <box size="0.1 1.2 0.08"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual>
+  </link>
+
+  <gazebo reference="cambao">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  
+  <joint name="eixocambao"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent link="cambao" />
+    <child link="cambao_uni_y" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.4"
+      upper="0.4"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="cambao_uni_y">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <mass value="0.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="eixocambao_uni_y"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent link="cambao_uni_y" />
+    <child link="cambao_uni" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.9"
+      upper="0.9"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="cambao_uni">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <mass value="0.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+  <joint name="eixocambao_uni"
+    type="revolute">
+    <origin
+      xyz="0 0.445 -0.31525"
+      rpy="0 0 0" />
+    <parent link="cambao_uni" />
+    <child link="chassi" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.9"
+      upper="0.9"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <!-- Trailer -->
+  <link name="chassi">
+    <inertial>
+      <mass
+        value="80.702" />
+        <xacro:box_inertia m="80.702" w="1" d="1.2" h="0.12"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.35"
+        rpy="0 0 0" />
+     <geometry>
+        <box size="1 1.2 0.12"/>
+      </geometry>
+      <material
+        name="Cyan">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.43"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="1 1.2 0.12"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="chassi">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <link name="rodeirodiant1">
+    <inertial>
+      <origin
+        xyz="-0.010304 0.018687 -0.067271"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.11"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.11"
+        iyz="0.0"
+        izz="0.11" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/rodeirodiant1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <gazebo reference="rodeirodiant1">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="rodeirodiant2">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <joint name="eixorodeirodiant1" type="revolute">
+    <origin
+      xyz="0.39 -0.445 0.36525"
+      rpy="0 0 0" />
+    <parent
+      link="chassi" />
+    <child
+      link="rodeirodiant1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodadiant1">
+    <inertial>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="2" />
+      <xacro:sphere_inertia m="2" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 1.57 0" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="rodadiant1">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="rodadiant2">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <joint name="eixorodadiant1"
+    type="continuous">
+    <origin
+      xyz="0.08 0 -0.22125"
+      rpy="0 0 0" />
+    <parent
+      link="rodeirodiant1" />
+    <child
+      link="rodadiant1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1E+30"
+      upper="1E+30"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodeirodiant2">
+    <inertial>
+      <origin
+        xyz="0.010304 0.018687 -0.067271"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.011"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.011"
+        iyz="0.0"
+        izz="0.11" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/rodeirodiant2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixorodeirodiant2"
+    type="revolute">
+    <origin
+      xyz="-0.39 -0.445 0.36525"
+      rpy="0 0 0" />
+    <parent
+      link="chassi" />
+    <child
+      link="rodeirodiant2" />
+    <axis
+      xyz="0 0 1" />
+    <!-- <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" /> -->
+    <limit
+      lower="-0.7"
+      upper="0.7"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="1.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <!-- <transmission name="transmission_common">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="eixorodavolantebigga_steer">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <joint name="eixorodeirodiant2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission> -->
+
+  <gazebo>
+    <joint name='barradiant1_JOINT_1' type='revolute'>
+      <parent>barradiant1</parent>
+      <child>rodeirodiant1</child>
+      <pose>-0.06 0.185 -0.027 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>0</damping>
+          <friction>1.2</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='barradiant2_JOINT_2' type='revolute'>
+      <parent>barradiant2</parent>
+      <child>rodeirodiant2</child>
+      <pose>0.06 0.185 -0.027 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>0</damping>
+          <friction>1.2</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='barratras1_JOINT_3' type='revolute'>
+      <parent>barratras1</parent>
+      <child>rodeirotras1</child>
+      <pose>-0.18 0 -0.08 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>0</damping>
+          <friction>1.2</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='barratras2_JOINT_4' type='revolute'>
+      <parent>barratras2</parent>
+      <child>rodeirotras2</child>
+      <pose>0.18 0 -0.08 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>0</damping>
+          <friction>1.2</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+  </gazebo>
+
+  <link name="rodadiant2">
+    <inertial>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="2" />
+      <xacro:sphere_inertia m="2" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="eixorodadiant2"
+    type="continuous">
+    <origin
+      xyz="-0.08 0 -0.22125"
+      rpy="0 0 0" />
+    <parent
+      link="rodeirodiant2" />
+    <child
+      link="rodadiant2" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1E+30"
+      upper="1E+30"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodeirotras1">
+    <inertial>
+      <origin
+        xyz="-0.014075 -2.2041E-06 -0.076225"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.11"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.11"
+        iyz="0.0"
+        izz="0.11" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/rodeirotras1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <gazebo reference="rodeirotras1">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="rodeirotras2">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <joint name="eixorodeirotras1"
+    type="revolute">
+    <origin
+      xyz="0.39 0.445 0.36525"
+      rpy="0 0 0" />
+    <parent
+      link="chassi" />
+    <child
+      link="rodeirotras1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodatras1">
+    <inertial>
+      <origin
+        xyz="-0.089466 6.8295E-06 -8.8605E-05"
+        rpy="0 0 0" />
+      <mass
+        value="2" />
+      <xacro:sphere_inertia m="2" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.08 0 0"
+        rpy="0 1.57 0" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <gazebo reference="rodatras1">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="rodatras2">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <joint name="eixorodatras1"
+    type="continuous">
+    <origin
+      xyz="0.080 0 -0.22125"
+      rpy="0 0 0" />
+    <parent
+      link="rodeirotras1" />
+    <child
+      link="rodatras1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1E+30"
+      upper="1E+30"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+  
+  <link name="rodeirotras2">
+    <inertial>
+      <origin
+        xyz="0.014075 -2.2041E-06 -0.076225"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.11"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.11"
+        iyz="0.0"
+        izz="0.11" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/rodeirotras2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixorodeirotras2"
+    type="revolute">
+    <origin
+      xyz="-0.39 0.445 0.36525"
+      rpy="0 0 0" />
+    <parent link="chassi" />
+    <child link="rodeirotras2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="rodatras2">
+    <inertial>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="2" />
+      <xacro:sphere_inertia m="2" r="0.14260"/>
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.14260" length="0.16"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.08 0 0"
+        rpy="0 1.57 0" />
+      <geometry>
+        <sphere radius="0.14260"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="eixorodatras2"
+    type="continuous">
+    <origin
+      xyz="-0.080 0 -0.22125"
+      rpy="0 0 0" />
+    <parent link="rodeirotras2" />
+    <child link="rodatras2" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1E+30"
+      upper="1E+30"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="barradiant1">
+    <inertial>
+      <origin
+        xyz="0.15787 0.042407 0.0127"
+        rpy="0 0 0" />
+      <mass
+        value="1.051" />
+      <inertia
+        ixx="0.0001507"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.00061584"
+        iyz="0.0"
+        izz="0.00073761" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/barradiant1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixobarradiant1"
+    type="revolute">
+    <origin
+      xyz="0.0225 0.1024 0.0123"
+      rpy="0 0 0" />
+    <parent link="cambao" />
+    <child link="barradiant1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="barradiant2">
+    <inertial>
+      <origin
+        xyz="-0.15787 0.042407 0.0127"
+        rpy="0 0 0" />
+      <mass
+        value="1.051" />
+      <inertia
+        ixx="0.0001507"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.00061584"
+        iyz="0.0"
+        izz="0.00073761" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/barradiant2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixobarradiant2"
+    type="revolute">
+    <origin
+      xyz="-0.0225 0.1024 0.0123"
+      rpy="0 0 0" />
+    <parent
+      link="cambao" />
+    <child
+      link="barradiant2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <link name="barratras1">
+    <inertial>
+      <origin
+        xyz="0.06781 0.53141 0.0127"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.034449"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.00073477"
+        iyz="0.0"
+        izz="0.035092" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/barratras1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixobarratras1"
+    type="revolute">
+    <origin
+      xyz="0.08555 -0.0853 -0.042712"
+      rpy="0 0 0" />
+    <parent
+      link="cambao" />
+    <child
+      link="barratras1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>
+
+  <!-- <joint name="eixobarratras1_rodeirotras1"
+    type="revolute">
+    <origin
+      xyz="-0.18 0 -0.08"
+      rpy="0 0 0" />
+    <parent
+      link="barratras1" />
+    <child
+      link="rodeirotras1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint> -->
+  <link name="barratras2">
+    <inertial>
+      <origin
+        xyz="-0.06781 0.53141 0.0127"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.034449"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.00073477"
+        iyz="0.0"
+        izz="0.035092" />
+    </inertial>
+    <!-- <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://glr_description/models/barratras2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual> -->
+  </link>
+
+  <joint name="eixobarratras2"
+    type="revolute">
+    <origin
+      xyz="-0.08555 -0.0853 -0.042712"
+      rpy="0 0 0" />
+    <parent
+      link="cambao" />
+    <child
+      link="barratras2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1"
+      upper="1"
+      effort="100"
+      velocity="1" />
+    <calibration
+      rising="0"
+      falling="0" />
+    <dynamics
+      damping="0"
+      friction="10.0" />
+    <safety_controller
+      soft_upper="0"
+      soft_lower="0"
+      k_position="0"
+      k_velocity="0" />
+  </joint>  
+
+
+  <!-- sensor -->
+  <xacro:property name="camera_link" value="0.05" />
+
+  <!-- Camera -->
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_link} ${camera_link} ${camera_link}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_link} ${camera_link} ${camera_link}"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 -1.6 0.6" rpy="0 0 -1.57"/>
+    <parent link="chassibigga"/>
+    <child link="camera_link"/>
+  </joint>
+
+  <!-- camera -->
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="camera">
+      <update_rate>40.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <ros>
+            <namespace>/glr_description</namespace>
+            <!-- <remapping>/glr_description/imu_plugin/out:=/glr_description/imu</remapping> -->
+        </ros>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>rrbot/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- velodyne -->
+  <xacro:arg name="gpu" default="false"/>
+  <xacro:property name="gpu" value="$(arg gpu)" />
+  <xacro:arg name="organize_cloud" default="false"/>
+  <xacro:property name="organize_cloud" value="$(arg organize_cloud)" />
+
+  <xacro:include filename="VLP-16.urdf.xacro"/>
+  <xacro:VLP-16 parent="chassibigga" name="velodyne" topic="points2" organize_cloud="${organize_cloud}" hz="10" samples="440" gpu="${gpu}" min_angle="-3.1415926535897931" max_angle="0.0">
+    <origin xyz="0 -1.7 0.4" rpy="0 0 0" />
+  </xacro:VLP-16>
+
+  <!-- modelo da IMU -->    
+  <link name="imu_link">
+    <!-- <pose relative_to='chassibigga'>0 -1 1 0 0.15 -1.5</pose> -->
+    <!-- <gravity>false</gravity> -->
+    <visual name='imu_visual'>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </visual>
+      <inertial>
+      <mass value="${0.001}"/>
+      <xacro:box_inertia m="0.001" w="0.1" d="0.1" h="0.012"/>
+      <!-- </inertia> -->
+    </inertial>
+  </link>
+
+  <joint name='imu_joint' type='fixed'>
+    <parent link="chassibigga"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <ros>
+            <namespace>/glr_description</namespace>
+            <remapping>/glr_description/imu_plugin/out:=/glr_description/imu</remapping>
+        </ros>
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+
+  <!-- sensor -->
+  <xacro:property name="camera2_link" value="0.05" />
+
+  <!-- Camera -->
+  <link name="camera2_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${camera2_link} ${camera2_link} ${camera2_link}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${camera2_link} ${camera2_link} ${camera2_link}"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="camera2_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 0.5" rpy="0 0 -3.14"/>
+    <parent link="chassi"/>
+    <child link="camera2_link"/>
+  </joint>
+
+  <!-- camera -->
+  <gazebo reference="camera2_link">
+    <sensor type="camera" name="camera2">
+      <update_rate>40.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera2_controller" filename="libgazebo_ros_camera.so">
+        <ros>
+            <namespace>/glr_description</namespace>
+            <!-- <remapping>/glr_description/imu_plugin/out:=/glr_description/imu</remapping> -->
+        </ros>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>rrbot/camera21</cameraName>
+        <imageTopicName>image_raw2</imageTopicName>
+        <cameraInfoTopicName>camera2_info</cameraInfoTopicName>
+        <frameName>camera2_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+    <!-- <joint name="camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 -1.6 0.5" rpy="0 0 -1.57"/>
+    <parent link="chassibigga"/>
+    <child link="camera_link"/>
+  </joint> -->
+
+</robot>
