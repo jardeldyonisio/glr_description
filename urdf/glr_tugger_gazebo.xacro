@@ -5,7 +5,7 @@
   <!-- TUGGER GAZEBO MATERIAL DEFINITIONS -->
   <!-- ============================================ -->
   
-  <gazebo reference="chassibigga">
+  <gazebo reference="base_link">
     <material>Gazebo/Orange</material>
   </gazebo>
 

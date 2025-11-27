@@ -22,20 +22,11 @@
     </inertial>
   </xacro:macro>
 
-  <!--Robot description  -->
-  <link name="base_link"/>
-
-  <!-- Robot Footprint -->
+  <!-- Robot Footprint (on the ground) -->
   <link name="base_footprint"/>
 
-  <joint name="base_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_footprint"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
-  <!-- Tugger -->
-  <link name="chassibigga">
+  <!-- Tugger Main Body (base_link) -->
+  <link name="base_link">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <inertial>
       <origin xyz="0 0 0.155" rpy="0 0 0" />
@@ -59,9 +50,9 @@
     </collision>
   </link>
 
-  <joint name="base_chassi_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="chassibigga"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
     <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
   </joint>
   
@@ -91,7 +82,7 @@
 
   <joint name="left_wheel_joint" type="continuous">
     <origin xyz="0.25 0 0" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+    <parent link="base_link"/>
     <child link="left_wheel"/>
     <axis xyz="1 0 0"/>
     <dynamics damping="0.1" friction="0.1"/>
@@ -123,7 +114,7 @@
 
   <joint name="right_wheel_joint" type="continuous">
     <origin xyz="-0.25 0 0" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+    <parent link="base_link"/>
     <child link="right_wheel"/>
     <axis xyz="1 0 0"/>
     <dynamics damping="0.1" friction="0.1"/>
@@ -159,7 +150,7 @@
 
   <joint name="hitch_joint" type="fixed">
     <origin xyz="0 0.35 0.14260" rpy="0 0 0"/>
-    <parent link="chassibigga"/>
+    <parent link="base_link"/>
     <child link="hitch_link"/>
   </joint>
 
@@ -188,7 +179,7 @@
   </link>
 
   <joint name="lidar_joint" type="fixed">
-    <parent link="chassibigga"/>
+    <parent link="base_link"/>
     <child link="lidar_link"/>
     <origin xyz="0 -0.25 0.34" rpy="0 0 0"/>
   </joint>
