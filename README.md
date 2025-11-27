@@ -2,4 +2,4 @@
 
 ## TODO
 
-- [ ] Review xacro parameters for custom robot and trailer dimensions. 
+- [ ] Add xacro parameters for custom robot and trailer dimensions. 
