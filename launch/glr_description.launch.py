@@ -69,17 +69,13 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Create the launch description and populate
-    ld = LaunchDescription()
-
-    # Declare the launch options
-    ld.add_action(declare_use_sim_time_cmd)
-    ld.add_action(declare_urdf_file_cmd)
-    ld.add_action(declare_rviz_config_file_cmd)
-
-    # Add nodes
-    ld.add_action(robot_state_publisher_node)
-    ld.add_action(joint_state_publisher_gui_node)
-    ld.add_action(rviz_node)
-
-    return ld
+    # Create and return the launch description
+    return LaunchDescription([
+        declare_use_sim_time_cmd,
+        declare_urdf_file_cmd,
+        declare_rviz_config_file_cmd,
+        
+        robot_state_publisher_node,
+        joint_state_publisher_gui_node,
+        rviz_node
+    ])
