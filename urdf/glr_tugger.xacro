@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="glr_tugger" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Wheel properties -->
+  <xacro:property name="wheel_radius" value="0.1" />
+  <xacro:property name="wheel_width" value="0.08" />
+  <xacro:property name="caster_radius" value="0.08" />
+  
+  <!-- Define intertial property macros  -->
+  <xacro:macro name="box_inertia" params="m w d h">
+    <inertia ixx="${1*(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${1*(m/12) * (w*w + d*d)}" iyz="0.0" izz="${1*(m/12) * (w*w + h*h)}"/>
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertia ixx="${1*(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${1*(2/5) * m * (r*r)}" iyz="0.0" izz="${1*(2/5) * m * (r*r)}"/>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0" iyy="${m*(3*r*r+h*h)/12}" iyz = "0" izz="${m*r*r/2}" /> 
+    </inertial>
+  </xacro:macro>
+
+  <!--Robot description  -->
+  <link name="base_link"/>
+
+  <!-- Robot Footprint -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Tugger -->
+  <link name="chassibigga">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <inertial>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <mass value="555.02" />
+      <xacro:box_inertia m="555.02" w="0.5" d="0.7" h="0.31"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <geometry>
+          <box size="0.50 0.70 0.31"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <geometry>
+          <box size="0.50 0.70 0.31"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_chassi_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassibigga"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
+  
+  <!-- Left Traction Wheel -->
+  <link name="left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="12"/>
+      <xacro:sphere_inertia m="12" r="${wheel_radius}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="wheel_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="left_wheel_joint" type="continuous">
+    <origin xyz="0.25 0 0" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="left_wheel"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- Right Traction Wheel -->
+  <link name="right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="12"/>
+      <xacro:sphere_inertia m="12" r="${wheel_radius}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="wheel_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_wheel_joint" type="continuous">
+    <origin xyz="-0.25 0 0" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="right_wheel"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+  
+  <!-- ============================================ -->
+  <!-- CASTER WHEELS COMMENTED FOR TESTING -->
+  <!-- ============================================ -->
+  
+  <!-- Hitch point at the back of tugger -->
+  <link name="hitch_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <material name="hitch_material">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="hitch_joint" type="fixed">
+    <origin xyz="0 0.35 0.14260" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="hitch_link"/>
+  </joint>
+
+  <!-- Generic LiDAR -->
+  <link name="lidar_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.07"/>
+      </geometry>
+      <material name="lidar_material">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="chassibigga"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 -0.25 0.34" rpy="0 0 0"/>
+  </joint>
+
+</robot>
