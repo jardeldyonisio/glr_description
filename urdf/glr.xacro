@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="glr_description" xmlns:xacro="http://ros.org/wiki/xacro">
   
-  <!-- Include Tugger definitions -->
   <xacro:include filename="$(find glr_description)/urdf/glr_tugger.xacro" />
-  
-  <!-- Include Trailer definitions -->
-  <xacro:include filename="$(find glr_description)/urdf/glr_trailer.xacro" />
-  
-  <!-- Include Gazebo definitions -->
   <xacro:include filename="$(find glr_description)/urdf/glr_tugger_gazebo.xacro" />
-  <xacro:include filename="$(find glr_description)/urdf/glr_trailer_gazebo.xacro" />
+  <xacro:include filename="$(find glr_description)/ros2_control/glr_ros2_control.xacro" />
+  
+  <xacro:include filename="$(find glr_description)/urdf/glr_trailer.xacro" />
+  <xacro:include filename="$(find glr_description)/urdf/glr_trailer_gazebo.xacro" />  
 
   <!-- Connection between tugger and trailer -->
   <joint name="tugger_trailer_joint" type="revolute">

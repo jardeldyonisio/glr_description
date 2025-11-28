@@ -1,81 +1,139 @@
-#!/usr/bin/env python3
+# Copyright 2020 ros2_control Development Team
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessExit
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-
-    # Define launch arguments
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    urdf_file = LaunchConfiguration('urdf_file')
-    rviz_config_file = LaunchConfiguration('rviz_config_file')
-
-    # Declare launch arguments
-    declare_use_sim_time_cmd = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='false',
-        description='Use sim time if true')
-
-    declare_urdf_file_cmd = DeclareLaunchArgument(
-        'urdf_file',
-        default_value=PathJoinSubstitution([
-            FindPackageShare('glr_description'),
-            'urdf',
-            'glr.xacro'
-        ]),
-        description='Full path to urdf file to load')
-
-    declare_rviz_config_file_cmd = DeclareLaunchArgument(
-        'rviz_config_file',
-        default_value=PathJoinSubstitution([
-            FindPackageShare('glr_description'),
-            'rviz',
-            'display.rviz'
-        ]),
-        description='Full path to the RVIZ config file to use')
-
-    # Robot State Publisher node
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[{
-            'robot_description': Command(['xacro ', urdf_file]),
-            'use_sim_time': use_sim_time
-        }],
-        output='screen'
+    # Declare arguments
+    declared_arguments = []
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "use_rviz",
+            default_value="true",
+            description="Start RViz2 automatically with this launch file.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "use_mock_hardware",
+            default_value="false",
+            description="Start robot with mock hardware mirroring command to its states.",
+        )
     )
 
-    # Joint State Publisher GUI node
-    joint_state_publisher_gui_node = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen'
+    # Initialize Arguments
+    use_rviz = LaunchConfiguration("use_rviz")
+    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+
+    # Get URDF via xacro
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution(
+                [FindPackageShare("glr_description"), "urdf", "glr.xacro"]
+            ),
+            " ",
+            "use_mock_hardware:=",
+            use_mock_hardware,
+        ]
+    )
+    robot_description = {"robot_description": robot_description_content}
+
+    robot_controllers = PathJoinSubstitution(
+        [
+            FindPackageShare("glr_description"),
+            "config",
+            "glr_controllers.yaml",
+        ]
+    )
+    rviz_config_file = PathJoinSubstitution(
+        [FindPackageShare("glr_description"), "rviz", "glr.rviz"]
     )
 
-    # RViz node
+    control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        # Provide both the controllers config and the robot_description so
+        # controller_manager can load the robot's URDF and expose its services
+        # (e.g. /controller_manager/list_controllers).
+        parameters=[robot_controllers, robot_description],
+        output="both",
+    )
+    robot_state_pub_node = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        output="both",
+        parameters=[robot_description],
+    )
     rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        arguments=['-d', rviz_config_file],
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen'
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", rviz_config_file],
+        condition=IfCondition(use_rviz),
     )
 
-    # Create and return the launch description
-    return LaunchDescription([
-        declare_use_sim_time_cmd,
-        declare_urdf_file_cmd,
-        declare_rviz_config_file_cmd,
-        
-        robot_state_publisher_node,
-        joint_state_publisher_gui_node,
-        rviz_node
-    ])
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
+
+    # Spawn the diff-drive controller defined in `glr_controllers.yaml`.
+    # We use `diffbot_base_controller` (not hoverboard) per project convention.
+    robot_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "diffbot_base_controller",
+            "--param-file",
+            robot_controllers,
+        ],
+    )
+
+    # Delay rviz start after `joint_state_broadcaster`
+    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[rviz_node],
+        )
+    )
+
+    # Delay start of robot_controller after `joint_state_broadcaster`
+    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[robot_controller_spawner],
+        )
+    )
+
+    nodes = [
+        control_node,
+        robot_state_pub_node,
+        joint_state_broadcaster_spawner,
+        delay_rviz_after_joint_state_broadcaster_spawner,
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+    ]
+
+    return LaunchDescription(declared_arguments + nodes)

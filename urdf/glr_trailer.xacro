@@ -51,7 +51,7 @@
   </joint>
 
   <!-- Trailer chassis -->
-  <link name="chassi">
+  <link name="trailer_footprint">
     <inertial>
       <mass value="80.702" />
       <xacro:box_inertia m="80.702" w="1" d="1.2" h="0.12"/>
@@ -76,7 +76,7 @@
   <joint name="cambao_chassi_joint" type="revolute">
     <origin xyz="0 0.445 -0.31525" rpy="0 0 0" />
     <parent link="cambao" />
-    <child link="chassi" />
+    <child link="trailer_footprint" />
     <axis xyz="0 0 1" />
     <limit lower="-0.4" upper="0.4" effort="100" velocity="1" />
     <dynamics damping="0" friction="0" />
@@ -94,7 +94,7 @@
 
   <joint name="eixorodeirodiant1" type="revolute">
     <origin xyz="0.39 -0.445 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
+    <parent link="trailer_footprint" />
     <child link="rodeirodiant1" />
     <axis xyz="0 0 1" />
     <limit lower="-1" upper="1" effort="100" velocity="1" />
@@ -143,7 +143,7 @@
 
   <joint name="eixorodeirodiant2" type="revolute">
     <origin xyz="-0.39 -0.445 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
+    <parent link="trailer_footprint" />
     <child link="rodeirodiant2" />
     <axis xyz="0 0 1" />
     <limit lower="-0.7" upper="0.7" effort="100" velocity="1" />
@@ -192,7 +192,7 @@
 
   <joint name="eixorodeirotras1" type="revolute">
     <origin xyz="0.39 0.445 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
+    <parent link="trailer_footprint" />
     <child link="rodeirotras1" />
     <axis xyz="0 0 1" />
     <limit lower="-1" upper="1" effort="100" velocity="1" />
@@ -241,7 +241,7 @@
 
   <joint name="eixorodeirotras2" type="revolute">
     <origin xyz="-0.39 0.445 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
+    <parent link="trailer_footprint" />
     <child link="rodeirotras2" />
     <axis xyz="0 0 1" />
     <limit lower="-1" upper="1" effort="100" velocity="1" />

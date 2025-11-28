@@ -9,7 +9,7 @@
     <material>Gazebo/Grey</material>
   </gazebo>
 
-  <gazebo reference="chassi">
+  <gazebo reference="trailer_footprint">
     <material>Gazebo/Orange</material>
   </gazebo>
 

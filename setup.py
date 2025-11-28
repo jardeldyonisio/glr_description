@@ -12,13 +12,11 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        # Include launch files
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-        # Include URDF files
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*')),
-        # Include RViz configs
         (os.path.join('share', package_name, 'rviz'), glob('rviz/*')),
-        # Include models
+        (os.path.join('share', package_name, 'config'), glob('config/*')),
+        (os.path.join('share', package_name, 'ros2_control'), glob('ros2_control/*')),
         (os.path.join('share', package_name, 'models'), glob('models/**/*', recursive=True)),
     ],
     install_requires=['setuptools'],
@@ -30,8 +28,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'odom = glr_description.odom:main',
-            'teleop_keyboard = glr_description.teleop_keyboard:main',
         ],
     },
 )

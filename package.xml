@@ -9,6 +9,8 @@
 
   <buildtool_depend>ament_python</buildtool_depend>
   
+  <exec_depend>controller-manager</exec_depend>
+  
   <depend>rclpy</depend>
   <depend>geometry_msgs</depend>
   <depend>python3-opencv</depend>

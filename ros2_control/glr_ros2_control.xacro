@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot>
+  <ros2_control name="glr" type="system">
+    <hardware>
+      <!-- Use <plugin> to specify the hardware plugin for ros2_control.
+           Older examples used <class>, but controller_manager now expects
+           a <plugin> tag containing the package/class name. -->
+   <!-- Use a hardware plugin available in the current environment.
+     The controller_manager error showed available types such as
+     'fake_components/GenericSystem', so use that to avoid pluginlib
+     lookup failures. If you have a specific hardware plugin installed
+     (e.g. ros2_control_demo_hardware), replace this value accordingly. -->
+   <plugin>fake_components/GenericSystem</plugin>
+      <param name="example_param_hw_start_duration_sec">0.0</param>
+      <param name="example_param_hw_stop_duration_sec">0.0</param>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+</robot>
+ 
