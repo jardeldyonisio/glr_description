@@ -5,18 +5,18 @@
   <xacro:include filename="$(find glr_description)/urdf/glr_tugger_gazebo.xacro" />
   <xacro:include filename="$(find glr_description)/ros2_control/glr_ros2_control.xacro" />
   
-  <xacro:include filename="$(find glr_description)/urdf/glr_trailer.xacro" />
-  <xacro:include filename="$(find glr_description)/urdf/glr_trailer_gazebo.xacro" />  
+  <!-- <xacro:include filename="$(find glr_description)/urdf/glr_trailer.xacro" /> -->
+  <!-- <xacro:include filename="$(find glr_description)/urdf/glr_trailer_gazebo.xacro" />   -->
 
   <!-- Connection between tugger and trailer -->
-  <joint name="tugger_trailer_joint" type="revolute">
+  <!-- <joint name="tugger_trailer_joint" type="revolute">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <parent link="hitch_link" />
     <child link="trailer_link" />
     <axis xyz="0 0 1" />
     <limit lower="-0.6" upper="0.6" effort="100" velocity="1" />
     <dynamics damping="0" friction="0" />
-  </joint>
+  </joint> -->
 
 </robot>
 
