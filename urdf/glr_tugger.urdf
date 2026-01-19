@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="glr_tugger">
+
+  <link name="base_link"/>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="chassibigga">
+    <inertial>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <mass value="555.02" />
+      <inertia ixx="27.09" ixy="0.0" ixz="0.0" iyy="15.99" iyz="0.0" izz="34.20"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <geometry>
+          <box size="0.50 0.70 0.31"/>
+      </geometry>
+      <material name="chassis_mat">
+        <color rgba="0.64706 0.61961 0.58824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.155" rpy="0 0 0" />
+      <geometry>
+          <box size="0.50 0.70 0.31"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_chassi_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassibigga"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+  
+  <link name="left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="12"/>
+      <inertia ixx="0.048" ixy="0.0" ixz="0.0" iyy="0.048" iyz="0.0" izz="0.048"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.08"/>
+      </geometry>
+      <material name="wheel_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="left_wheel_joint" type="continuous">
+    <origin xyz="0.25 0 0" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="left_wheel"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <link name="right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="12"/>
+      <inertia ixx="0.048" ixy="0.0" ixz="0.0" iyy="0.048" iyz="0.0" izz="0.048"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.08"/>
+      </geometry>
+      <material name="wheel_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_wheel_joint" type="continuous">
+    <origin xyz="-0.25 0 0" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="right_wheel"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+  
+  <link name="hitch_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <material name="hitch_material">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="hitch_joint" type="fixed">
+    <origin xyz="0 0.35 0.14260" rpy="0 0 0"/>
+    <parent link="chassibigga"/>
+    <child link="hitch_link"/>
+  </joint>
+
+  <link name="lidar_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.07"/>
+      </geometry>
+      <material name="lidar_material">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="chassibigga"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 -0.25 0.34" rpy="0 0 0"/>
+  </joint>
+
+</robot>
