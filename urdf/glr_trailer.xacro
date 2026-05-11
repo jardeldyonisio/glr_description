@@ -1,72 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="glr_trailer" xmlns:xacro="http://ros.org/wiki/xacro">
   
-  <!-- Trailer wheel properties -->
   <xacro:property name="trailer_wheel_radius" value="0.1" />
   <xacro:property name="trailer_wheel_width" value="0.08" />
   
-  <!-- Define intertial property macros  -->
   <xacro:macro name="box_inertia" params="m w d h">
-    <inertia ixx="${1*(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${1*(m/12) * (w*w + d*d)}" iyz="0.0" izz="${1*(m/12) * (w*w + h*h)}"/>
+    <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
   </xacro:macro>
 
   <xacro:macro name="sphere_inertia" params="m r">
-    <inertia ixx="${1*(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${1*(2/5) * m * (r*r)}" iyz="0.0" izz="${1*(2/5) * m * (r*r)}"/>
+    <inertia ixx="${(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${(2/5) * m * (r*r)}" iyz="0.0" izz="${(2/5) * m * (r*r)}"/>
   </xacro:macro>
 
-  <!-- Trailer base link -->
   <link name="trailer_link">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.003381 1.5929e-07 0.02162" />
+      <origin rpy="0 0 0" xyz="0 0 0" />
       <mass value="0.5" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
 
-  <!-- Connector bar (cambao) -->
   <link name="cambao">
     <inertial>
-      <origin xyz="-0.0010213 -0.38489 0.0092469" rpy="0 0 0" />
-      <mass value="1." />
-      <inertia ixx="0.12" ixy="0.0" ixz="0.0" iyy="0.12" iyz="0.0" izz="0.12" />
+      <origin xyz="0 0.3 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.03" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.03" />
     </inertial>
     <visual>
-      <origin xyz="0 -0.7 0" rpy="0 0 0" />
-     <geometry>
-        <box size="0.1 1.2 0.08"/>
+      <origin xyz="0 0.3 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.6 0.08"/>
       </geometry>
-      <material name="">
-        <color rgba="0.64706 0.61961 0.58824 1" />
+      <material name="Grey">
+        <color rgba="0.6 0.6 0.6 1" />
       </material>
     </visual>
+    <collision>
+      <origin xyz="0 0.3 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.6 0.08"/>
+      </geometry>
+    </collision>
   </link>
 
   <joint name="trailer_cambao_joint" type="revolute">
-    <origin xyz="0 1.1578 0.0112477" rpy="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
     <parent link="trailer_link" />
     <child link="cambao" />
-    <axis xyz="0 1 0" />
-    <limit lower="-0.6" upper="0.6" effort="100" velocity="1" />
-    <dynamics damping="0" friction="0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="1" />
+    <dynamics damping="10000.0" friction="0.0" />
   </joint>
 
-  <!-- Trailer chassis -->
   <link name="chassi">
     <inertial>
+      <origin xyz="0 0.6 0.35" rpy="0 0 0" />
       <mass value="80.702" />
       <xacro:box_inertia m="80.702" w="1" d="1.2" h="0.12"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0.35" rpy="0 0 0" />
-     <geometry>
+      <origin xyz="0 0.6 0.35" rpy="0 0 0" />
+      <geometry>
         <box size="1 1.2 0.12"/>
       </geometry>
       <material name="Cyan">
-        <color rgba="0.64706 0.61961 0.58824 1" />
+        <color rgba="0 1 1 1" />
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0.43" rpy="0 0 0" />
+      <origin xyz="0 0.6 0.35" rpy="0 0 0" />
       <geometry>
         <box size="1 1.2 0.12"/>
       </geometry>
@@ -74,31 +76,28 @@
   </link>
 
   <joint name="cambao_chassi_joint" type="revolute">
-    <origin xyz="0 0.445 -0.31525" rpy="0 0 0" />
+    <origin xyz="0 0.6 -0.284" rpy="0 0 0" />
     <parent link="cambao" />
     <child link="chassi" />
     <axis xyz="0 0 1" />
-    <limit lower="-0.4" upper="0.4" effort="100" velocity="1" />
-    <dynamics damping="0" friction="0" />
+    <limit lower="-0.8" upper="0.8" effort="100" velocity="1" />
+    <dynamics damping="10000.0" friction="0.0" />
   </joint>
 
-  <!-- Trailer wheel mounts and wheels -->
-  <!-- Front Left -->
   <link name="rodeirodiant1">
     <inertial>
-      <origin xyz="-0.010304 0.018687 -0.067271" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0.5" />
-      <inertia ixx="0.11" ixy="0.0" ixz="0.0" iyy="0.11" iyz="0.0" izz="0.11" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
 
-  <joint name="eixorodeirodiant1" type="revolute">
-    <origin xyz="0.39 -0.445 0.36525" rpy="0 0 0" />
+  <joint name="eixorodeirodiant1" type="continuous">
+    <origin xyz="0.39 0.155 0.36525" rpy="0 0 0" />
     <parent link="chassi" />
     <child link="rodeirodiant1" />
     <axis xyz="0 0 1" />
-    <limit lower="-1" upper="1" effort="100" velocity="1" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
   <link name="rodadiant1">
@@ -112,9 +111,6 @@
       <geometry>
         <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
       </geometry>
-      <material name="">
-        <color rgba="0.29804 0.29804 0.29804 1" />
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0" />
@@ -129,25 +125,23 @@
     <parent link="rodeirodiant1" />
     <child link="rodadiant1" />
     <axis xyz="1 0 0" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
-  <!-- Front Right -->
   <link name="rodeirodiant2">
     <inertial>
-      <origin xyz="0.010304 0.018687 -0.067271" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0.5" />
-      <inertia ixx="0.011" ixy="0.0" ixz="0.0" iyy="0.011" iyz="0.0" izz="0.11" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
 
-  <joint name="eixorodeirodiant2" type="revolute">
-    <origin xyz="-0.39 -0.445 0.36525" rpy="0 0 0" />
+  <joint name="eixorodeirodiant2" type="continuous">
+    <origin xyz="-0.39 0.155 0.36525" rpy="0 0 0" />
     <parent link="chassi" />
     <child link="rodeirodiant2" />
     <axis xyz="0 0 1" />
-    <limit lower="-0.7" upper="0.7" effort="100" velocity="1" />
-    <dynamics damping="0" friction="1.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
   <link name="rodadiant2">
@@ -161,9 +155,6 @@
       <geometry>
         <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
       </geometry>
-      <material name="">
-        <color rgba="0.29804 0.29804 0.29804 1" />
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0" />
@@ -178,25 +169,23 @@
     <parent link="rodeirodiant2" />
     <child link="rodadiant2" />
     <axis xyz="1 0 0" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
-  <!-- Rear Left -->
   <link name="rodeirotras1">
     <inertial>
-      <origin xyz="-0.014075 -2.2041E-06 -0.076225" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0.5" />
-      <inertia ixx="0.11" ixy="0.0" ixz="0.0" iyy="0.11" iyz="0.0" izz="0.11" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
 
-  <joint name="eixorodeirotras1" type="revolute">
-    <origin xyz="0.39 0.445 0.36525" rpy="0 0 0" />
+  <joint name="eixorodeirotras1" type="continuous">
+    <origin xyz="0.39 1.045 0.36525" rpy="0 0 0" />
     <parent link="chassi" />
     <child link="rodeirotras1" />
     <axis xyz="0 0 1" />
-    <limit lower="-1" upper="1" effort="100" velocity="1" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
   <link name="rodatras1">
@@ -210,9 +199,6 @@
       <geometry>
         <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
       </geometry>
-      <material name="">
-        <color rgba="0.29804 0.29804 0.29804 1" />
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0" />
@@ -223,29 +209,27 @@
   </link>
 
   <joint name="eixorodatras1" type="continuous">
-    <origin xyz="0.080 0 -0.22125" rpy="0 0 0" />
+    <origin xyz="0.08 0 -0.22125" rpy="0 0 0" />
     <parent link="rodeirotras1" />
     <child link="rodatras1" />
     <axis xyz="1 0 0" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
-  
-  <!-- Rear Right -->
+
   <link name="rodeirotras2">
     <inertial>
-      <origin xyz="0.014075 -2.2041E-06 -0.076225" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="0.5" />
-      <inertia ixx="0.11" ixy="0.0" ixz="0.0" iyy="0.11" iyz="0.0" izz="0.11" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
 
-  <joint name="eixorodeirotras2" type="revolute">
-    <origin xyz="-0.39 0.445 0.36525" rpy="0 0 0" />
+  <joint name="eixorodeirotras2" type="continuous">
+    <origin xyz="-0.39 1.045 0.36525" rpy="0 0 0" />
     <parent link="chassi" />
     <child link="rodeirotras2" />
     <axis xyz="0 0 1" />
-    <limit lower="-1" upper="1" effort="100" velocity="1" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
   <link name="rodatras2">
@@ -259,9 +243,6 @@
       <geometry>
         <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
       </geometry>
-      <material name="">
-        <color rgba="0.29804 0.29804 0.29804 1" />
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 1.5708 0" />
@@ -272,11 +253,11 @@
   </link>
 
   <joint name="eixorodatras2" type="continuous">
-    <origin xyz="-0.080 0 -0.22125" rpy="0 0 0" />
+    <origin xyz="-0.08 0 -0.22125" rpy="0 0 0" />
     <parent link="rodeirotras2" />
     <child link="rodatras2" />
     <axis xyz="1 0 0" />
-    <dynamics damping="0" friction="10.0" />
+    <dynamics damping="0.0" friction="0.0" />
   </joint>
 
 </robot>
