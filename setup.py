@@ -4,6 +4,10 @@ from glob import glob
 
 package_name = 'glr_description'
 
+
+def list_files(pattern):
+    return [path for path in glob(pattern, recursive=True) if os.path.isfile(path)]
+
 setup(
     name=package_name,
     version='0.1.0',
@@ -13,13 +17,13 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         # Include launch files
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'launch'), list_files('launch/*.py')),
         # Include URDF files
-        (os.path.join('share', package_name, 'urdf'), glob('urdf/*')),
+        (os.path.join('share', package_name, 'urdf'), list_files('urdf/**/*')),
         # Include RViz configs
-        (os.path.join('share', package_name, 'rviz'), glob('rviz/*')),
+        (os.path.join('share', package_name, 'rviz'), list_files('rviz/*')),
         # Include models
-        (os.path.join('share', package_name, 'models'), glob('models/**/*', recursive=True)),
+        (os.path.join('share', package_name, 'models'), list_files('models/**/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

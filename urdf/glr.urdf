@@ -347,165 +347,125 @@
     <limit effort="100" lower="-0.8" upper="0.8" velocity="1"/>
     <dynamics damping="10000.0" friction="0.0"/>
   </joint>
-  <link name="rodeirodiant1">
+  <link name="diant1_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.5"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="eixorodeirodiant1" type="continuous">
-    <origin rpy="0 0 0" xyz="0.39 0.155 0.36525"/>
-    <parent link="chassi"/>
-    <child link="rodeirodiant1"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.0" friction="0.0"/>
-  </joint>
-  <link name="rodadiant1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="2"/>
+      <mass value="2.0"/>
       <inertia ixx="0.008000000000000002" ixy="0.0" ixz="0.0" iyy="0.008000000000000002" iyz="0.0" izz="0.008000000000000002"/>
     </inertial>
     <visual>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
+      <material name="caster_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
     </visual>
     <collision>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
     </collision>
   </link>
-  <joint name="eixorodadiant1" type="continuous">
-    <origin rpy="0 0 0" xyz="0.08 0 -0.22125"/>
-    <parent link="rodeirodiant1"/>
-    <child link="rodadiant1"/>
-    <axis xyz="1 0 0"/>
-    <dynamics damping="0.0" friction="0.0"/>
-  </joint>
-  <link name="rodeirodiant2">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.5"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="eixorodeirodiant2" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.39 0.155 0.36525"/>
+  <joint name="diant1_wheel_joint" type="continuous">
+    <origin rpy="0 0 0" xyz="0.47 0.155 0.144"/>
     <parent link="chassi"/>
-    <child link="rodeirodiant2"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.0" friction="0.0"/>
+    <child link="diant1_wheel"/>
+    <!-- Sphere rotation axis logic can remain 0 1 0 or 1 0 0, dynamics handle the rest -->
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
-  <link name="rodadiant2">
+  <link name="diant2_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="2"/>
+      <mass value="2.0"/>
       <inertia ixx="0.008000000000000002" ixy="0.0" ixz="0.0" iyy="0.008000000000000002" iyz="0.0" izz="0.008000000000000002"/>
     </inertial>
     <visual>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
+      <material name="caster_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
     </visual>
     <collision>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
     </collision>
   </link>
-  <joint name="eixorodadiant2" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.08 0 -0.22125"/>
-    <parent link="rodeirodiant2"/>
-    <child link="rodadiant2"/>
-    <axis xyz="1 0 0"/>
-    <dynamics damping="0.0" friction="0.0"/>
-  </joint>
-  <link name="rodeirotras1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.5"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="eixorodeirotras1" type="continuous">
-    <origin rpy="0 0 0" xyz="0.39 1.045 0.36525"/>
+  <joint name="diant2_wheel_joint" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.47 0.155 0.144"/>
     <parent link="chassi"/>
-    <child link="rodeirotras1"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.0" friction="0.0"/>
+    <child link="diant2_wheel"/>
+    <!-- Sphere rotation axis logic can remain 0 1 0 or 1 0 0, dynamics handle the rest -->
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
-  <link name="rodatras1">
+  <link name="tras1_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="2"/>
+      <mass value="2.0"/>
       <inertia ixx="0.008000000000000002" ixy="0.0" ixz="0.0" iyy="0.008000000000000002" iyz="0.0" izz="0.008000000000000002"/>
     </inertial>
     <visual>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
+      <material name="caster_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
     </visual>
     <collision>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
     </collision>
   </link>
-  <joint name="eixorodatras1" type="continuous">
-    <origin rpy="0 0 0" xyz="0.08 0 -0.22125"/>
-    <parent link="rodeirotras1"/>
-    <child link="rodatras1"/>
-    <axis xyz="1 0 0"/>
-    <dynamics damping="0.0" friction="0.0"/>
-  </joint>
-  <link name="rodeirotras2">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.5"/>
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
-    </inertial>
-  </link>
-  <joint name="eixorodeirotras2" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.39 1.045 0.36525"/>
+  <joint name="tras1_wheel_joint" type="continuous">
+    <origin rpy="0 0 0" xyz="0.47 1.045 0.144"/>
     <parent link="chassi"/>
-    <child link="rodeirotras2"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.0" friction="0.0"/>
+    <child link="tras1_wheel"/>
+    <!-- Sphere rotation axis logic can remain 0 1 0 or 1 0 0, dynamics handle the rest -->
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
-  <link name="rodatras2">
+  <link name="tras2_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="2"/>
+      <mass value="2.0"/>
       <inertia ixx="0.008000000000000002" ixy="0.0" ixz="0.0" iyy="0.008000000000000002" iyz="0.0" izz="0.008000000000000002"/>
     </inertial>
     <visual>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
+      <material name="caster_material">
+        <color rgba="0.29804 0.29804 0.29804 1"/>
+      </material>
     </visual>
     <collision>
-      <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.1"/>
+        <sphere radius="0.1"/>
       </geometry>
     </collision>
   </link>
-  <joint name="eixorodatras2" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.08 0 -0.22125"/>
-    <parent link="rodeirotras2"/>
-    <child link="rodatras2"/>
-    <axis xyz="1 0 0"/>
-    <dynamics damping="0.0" friction="0.0"/>
+  <joint name="tras2_wheel_joint" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.47 1.045 0.144"/>
+    <parent link="chassi"/>
+    <child link="tras2_wheel"/>
+    <!-- Sphere rotation axis logic can remain 0 1 0 or 1 0 0, dynamics handle the rest -->
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
   <!-- Connection between tugger and trailer -->
   <joint name="tugger_trailer_joint" type="revolute">

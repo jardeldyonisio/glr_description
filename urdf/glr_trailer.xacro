@@ -2,7 +2,13 @@
 <robot name="glr_trailer" xmlns:xacro="http://ros.org/wiki/xacro">
   
   <xacro:property name="trailer_wheel_radius" value="0.1" />
-  <xacro:property name="trailer_wheel_width" value="0.08" />
+  <xacro:property name="trailer_wheel_mass" value="2.0" />
+
+  <!-- Calculated absolute positions based on previous intermediate links -->
+  <xacro:property name="caster_x" value="0.47" />
+  <xacro:property name="caster_y_front" value="0.155" />
+  <xacro:property name="caster_y_rear" value="1.045" />
+  <xacro:property name="caster_z" value="0.144" />
   
   <xacro:macro name="box_inertia" params="m w d h">
     <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
@@ -84,180 +90,46 @@
     <dynamics damping="10000.0" friction="0.0" />
   </joint>
 
-  <link name="rodeirodiant1">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0.5" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
-    </inertial>
-  </link>
+  <!-- ============================================ -->
+  <!-- CASTER WHEELS                                -->
+  <!-- ============================================ -->
+  <xacro:macro name="caster_wheel" params="prefix reflect_x y_pos">
+    <link name="${prefix}_wheel">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${trailer_wheel_mass}"/>
+        <xacro:sphere_inertia m="${trailer_wheel_mass}" r="${trailer_wheel_radius}"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${trailer_wheel_radius}"/>
+        </geometry>
+        <material name="caster_material">
+          <color rgba="0.29804 0.29804 0.29804 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${trailer_wheel_radius}"/>
+        </geometry>
+      </collision>
+    </link>
 
-  <joint name="eixorodeirodiant1" type="continuous">
-    <origin xyz="0.39 0.155 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
-    <child link="rodeirodiant1" />
-    <axis xyz="0 0 1" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <origin xyz="${caster_x * reflect_x} ${y_pos} ${caster_z}" rpy="0 0 0"/>
+      <parent link="chassi"/>
+      <child link="${prefix}_wheel"/>
+      <!-- Sphere rotation axis logic can remain 0 1 0 or 1 0 0, dynamics handle the rest -->
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.5" friction="0.5"/>
+    </joint>
+  </xacro:macro>
 
-  <link name="rodadiant1">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="2" />
-      <xacro:sphere_inertia m="2" r="${trailer_wheel_radius}"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="eixorodadiant1" type="continuous">
-    <origin xyz="0.08 0 -0.22125" rpy="0 0 0" />
-    <parent link="rodeirodiant1" />
-    <child link="rodadiant1" />
-    <axis xyz="1 0 0" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodeirodiant2">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0.5" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
-    </inertial>
-  </link>
-
-  <joint name="eixorodeirodiant2" type="continuous">
-    <origin xyz="-0.39 0.155 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
-    <child link="rodeirodiant2" />
-    <axis xyz="0 0 1" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodadiant2">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="2" />
-      <xacro:sphere_inertia m="2" r="${trailer_wheel_radius}"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="eixorodadiant2" type="continuous">
-    <origin xyz="-0.08 0 -0.22125" rpy="0 0 0" />
-    <parent link="rodeirodiant2" />
-    <child link="rodadiant2" />
-    <axis xyz="1 0 0" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodeirotras1">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0.5" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
-    </inertial>
-  </link>
-
-  <joint name="eixorodeirotras1" type="continuous">
-    <origin xyz="0.39 1.045 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
-    <child link="rodeirotras1" />
-    <axis xyz="0 0 1" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodatras1">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="2" />
-      <xacro:sphere_inertia m="2" r="${trailer_wheel_radius}"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="eixorodatras1" type="continuous">
-    <origin xyz="0.08 0 -0.22125" rpy="0 0 0" />
-    <parent link="rodeirotras1" />
-    <child link="rodatras1" />
-    <axis xyz="1 0 0" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodeirotras2">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0.5" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
-    </inertial>
-  </link>
-
-  <joint name="eixorodeirotras2" type="continuous">
-    <origin xyz="-0.39 1.045 0.36525" rpy="0 0 0" />
-    <parent link="chassi" />
-    <child link="rodeirotras2" />
-    <axis xyz="0 0 1" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
-
-  <link name="rodatras2">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="2" />
-      <xacro:sphere_inertia m="2" r="${trailer_wheel_radius}"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
-      <geometry>
-        <cylinder radius="${trailer_wheel_radius}" length="${trailer_wheel_width}"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="eixorodatras2" type="continuous">
-    <origin xyz="-0.08 0 -0.22125" rpy="0 0 0" />
-    <parent link="rodeirotras2" />
-    <child link="rodatras2" />
-    <axis xyz="1 0 0" />
-    <dynamics damping="0.0" friction="0.0" />
-  </joint>
+  <xacro:caster_wheel prefix="diant1" reflect_x="1" y_pos="${caster_y_front}" />
+  <xacro:caster_wheel prefix="diant2" reflect_x="-1" y_pos="${caster_y_front}" />
+  <xacro:caster_wheel prefix="tras1" reflect_x="1" y_pos="${caster_y_rear}" />
+  <xacro:caster_wheel prefix="tras2" reflect_x="-1" y_pos="${caster_y_rear}" />
 
 </robot>
